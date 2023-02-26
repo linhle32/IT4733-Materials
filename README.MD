@@ -11,3 +11,4 @@ Learning modules are as follows
 |03 | Introduction to MapReduce |
 |04 | Introduction to Spark	|
 |05 | PySpark dataframe	|
+|06 | Classification with PySpark |	
