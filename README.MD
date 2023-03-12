@@ -12,3 +12,4 @@ Learning modules are as follows
 |04 | Introduction to Spark	|
 |05 | PySpark dataframe	|
 |06 | Classification with PySpark |	
+|07 | Regression with PySpark |
