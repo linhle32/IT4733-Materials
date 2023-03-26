@@ -13,3 +13,4 @@ Learning modules are as follows
 |05 | PySpark dataframe	|
 |06 | Classification with PySpark |	
 |07 | Regression with PySpark |
+|08	| Introduction to MongoDB |	 	

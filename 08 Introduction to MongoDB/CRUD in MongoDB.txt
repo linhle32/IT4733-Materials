@@ -1,0 +1,117 @@
+//show all databases
+show dbs
+
+//switch to a database
+//the database will be created if it's not existing
+use it4733
+
+//check current database
+db
+
+//create collection - somewhat similar to sql table
+//this step is not necessary
+db.createCollection("people")
+
+//insert into collection name "people"
+//people will be created if it's not existing
+db.people.insertOne({"PID":"000101","first_name":"Alice","last_name":"Smith"})
+db.people.insertOne({"PID":"000131","first_name":"Bob","last_name":"Jobs"})
+
+db.people.insertMany([
+                     {"PID":"000234","first_name":"Carol","last_name":"Brown"},
+                     {"PID":"000236","first_name":"Dean","last_name":"Davis"},
+                     ])
+
+//show all documents in collection people
+db.people.find()
+
+//find with filter
+db.people.find({"PID":"000234"})
+db.people.find({"first_name":"Alice"})
+
+//documents in the same collections may have different fields
+db.people.insertMany([
+                     {"PID":"0230234","first_name":"Emma","last_name":"Greene","age":25},
+                     {"PID":"0123334","first_name":"Emmet","last_name":"Jones","age":21},
+                     {"PID":"0134436","first_name":"George","last_name":"Miller","age":36},
+                     {"PID":"0021343","first_name":"Hannah","last_name":"Lawson","age":30},
+                     {"PID":"0745323","first_name":"John","last_name":"Wilson","age":36,"email":"john@email.com"},
+                     ])
+
+db.people.find()
+                     
+/////////////
+//more find statements
+//SELECT * FROM people WHERE age = 36;
+db.people.find({"age":36})
+
+//SELECT * FROM people WHERE age > 30;
+db.people.find({"age":{$gte:30}}) //other comparison operators: $eq (=), $gte (>=), $lt (<), $lte (<=)
+
+//SELECT * FROM people WHERE first_name LIKE '%Emm%';
+db.people.find({"first_name":/Emm/})
+
+//literal strings are case-sensitive
+db.people.find({"first_name":/emm/})
+
+//SELECT * FROM people WHERE first_name LIKE '%Emm%' AND age > 23;
+db.people.find({"first_name":/Emm/,"age":{$gt:23}})
+
+//SELECT * FROM people WHERE first_name LIKE '%Emm%' AND age < 23;
+db.people.find({"first_name":/Emm/,"age":{$lt:23}})
+
+//SELECT first_name, last_name FROM people;
+db.people.find({},{"first_name":1,"last_name":1,_id:0})
+
+//SELECT * FROM people ORDER BY last_name;
+db.people.find().sort({"last_name":1})
+
+//SELECT first_name, last_name, age FROM people ORDER BY age DESC;
+db.people.find({},{"first_name":1,"last_name":1,"age":1,_id:0}).sort({"age":-1})
+
+//SELECT COUNT(*) FROM people;
+db.people.count()
+
+//SELECT COUNT(*) FROM people WHERE first_name LIKE '%Emm';
+db.people.count({"first_name":/Emm/})
+
+//SELECT first_name, last_name FROM people WHERE age = 36;
+db.people.find({"age":36},{"first_name":1,"last_name":1,_id:0})
+
+//note: the quotes "" are not needed in field names, for example
+db.people.find({age:36},{first_name:1,last_name:1,_id:0}) //works
+//however, you will need it to query an embedded document's field, as shown later
+
+//insert a new document
+db.people.insert({PID:"1234534",first_name:"Ken",last_name:"Rockwell",age:45,"phone_number":"0123456789"})
+
+//this find all documents that have the field "age". 
+//this kind of query is not possible in SQL, since tables have fixed schema, 
+//and all rows in the same table have the same attributes
+db.people.find({age:{$exists:true}})
+
+//update documents
+//UPDATE people SET age = 27 WHERE PID = "0230234";
+db.people.update({"PID":"0230234"},{$set:{"age":27}},{multi:true})
+
+//we can add new field when updating
+//not possible in SQL without altering the table first
+//then all rows will have the new attribute added
+db.people.update({"PID":"000101"},{$set:{"age":30}})
+db.people.find()
+
+//update multiple fields
+db.people.update({"PID":"000101"},{$set:{"last_name":"Jones","age":35,"email":"alice@mail.com"}})
+db.people.find({"PID":"000101"})
+
+//delete fields from documents
+db.people.update({"PID":"1234534"}, {$unset: {"phone.number":1}} , {multi: true});
+db.people.find({"PID":"1234534"})
+
+//delete document
+//DELETE FROM people WHERE PID = "1234534";
+db.people.drop({"PID":"1234534"})
+db.people.find({"PID":"1234534"})
+
+//drop collection people
+db.people.drop()
